@@ -60,6 +60,8 @@ int main() {
         control_file << "Section: Tweaks\nDepends: mobilesubstrate (>= 0.9.5000), firmware (>= 11.0)";
     }
 
+    control_file.close();
+
     // writing Tweak.xm
     std::string tweakxm = folder + "/Tweak.xm";
     std::ofstream tweakxm_file(tweakxm);
@@ -67,6 +69,8 @@ int main() {
     if (tweakxm_file.is_open()) {
         tweakxm_file << "#import <Foundation/Foundation.h>\n#import <UIKit/UIKit.h>\n\n\n";
     }
+
+    tweakxm_file.close();
 
     // writing Makefile
     std::string makefile = folder + "/Makefile";
@@ -80,6 +84,8 @@ int main() {
         makefile_f << "$(TWEAK_NAME)_FILES = Tweak.xm\n$(TWEAK_NAME)_CFLAGS = -fobjc-arc\n\ninclude $(THEOS_MAKE_PATH)/tweak.mk";
     }
 
+    makefile_f.close();
+
     // writing plist
     std::string plist = folder + "/" + folder + ".plist";
     std::ofstream plist_file(plist);
@@ -87,6 +93,8 @@ int main() {
     if (plist_file.is_open()) {
         plist_file << "{ Filter = { Bundles = ( \"" << app_bundle << "\" ); }; }";
     }
+
+    plist_file.close();
 
     std::cout << "finished writing all project files to " << folder << "!\n";
 }
