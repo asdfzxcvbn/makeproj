@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <csignal>
 #include <unistd.h>
+
 // im so sorry
 std::string folder, bundle_id, desc, app, app_bundle, author;
 
@@ -19,7 +20,7 @@ void signalHandler(int signal) {
 
 int main() {
     // info
-    char n = '\n';
+    char n = '\n';  // probably shouldn't have done this, but uh.. whatever
     std::signal(SIGINT, signalHandler);
     std::cout << "enter the project name: ";
     std::getline(std::cin, folder);
@@ -57,7 +58,7 @@ int main() {
         control_file << "Description: " << desc << n;
         control_file << "Author: " << author << n;
         control_file << "Maintainer: " << author << n;
-        control_file << "Section: Tweaks\nDepends: mobilesubstrate (>= 0.9.5000), firmware (>= 11.0)";
+        control_file << "Section: Tweaks\nDepends: firmware (>= 12.0)" << n;
     }
 
     control_file.close();
@@ -67,7 +68,7 @@ int main() {
     std::ofstream tweakxm_file(tweakxm);
 
     if (tweakxm_file.is_open()) {
-        tweakxm_file << "#import <Foundation/Foundation.h>\n#import <UIKit/UIKit.h>\n\n\n";
+        tweakxm_file << "#import <Foundation/Foundation.h>\n#import <objc/runtime.h>\n\%config(generator=internal);\n\n\n\n";
     }
 
     tweakxm_file.close();
@@ -77,11 +78,11 @@ int main() {
     std::ofstream makefile_f(makefile);
 
     if (makefile_f.is_open()) {
-        makefile_f << "TARGET := iphone:clang:latest:10.0\n";
+        makefile_f << "TARGET := iphone:clang:latest:12.0\n";
         makefile_f << "INSTALL_TARGET_PROCESSES = " << app << n;
-        makefile_f << "ARCHS = arm64\n\ninclude $(THEOS)/makefiles/common.mk\n\n";
+        makefile_f << "ARCHS = arm64 arm64e\n\ninclude $(THEOS)/makefiles/common.mk\n\n";
         makefile_f << "TWEAK_NAME = " << folder << n << n;
-        makefile_f << "$(TWEAK_NAME)_FILES = Tweak.xm\n$(TWEAK_NAME)_CFLAGS = -fobjc-arc\n\ninclude $(THEOS_MAKE_PATH)/tweak.mk";
+        makefile_f << "$(TWEAK_NAME)_FILES = Tweak.xm\n$(TWEAK_NAME)_CFLAGS = -fobjc-arc\n$(TWEAK_NAME)_LOGOS_DEFAULT_GENERATOR = internal\n\ninclude $(THEOS_MAKE_PATH)/tweak.mk" << n;
     }
 
     makefile_f.close();
