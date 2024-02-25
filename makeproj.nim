@@ -18,12 +18,6 @@ const tweakContent: string = """#import <Foundation/Foundation.h>
 
 """
 
-proc leftEarly(): void =
-    echo "oh, okay"
-    if createdDir:  # YES this is required bc idk how to except a NameError like in python lol
-        removeDir(name)
-    quit()
-
 try:
     name = readLineFromStdin("enter the project name: ")
     if dirExists(name):
@@ -43,7 +37,10 @@ try:
     appBundle = readLineFromStdin("enter the bundle id of the app you tweaked: ")
     author = readLineFromStdin("enter the name of the tweak author: ")
 except IOError:
-    leftEarly()
+    echo "oh, okay"
+    if createdDir:  # YES this is required bc idk how to except a NameError like in python lol
+        removeDir(name)
+    quit(0)
 
 setCurrentDir(name)
 
